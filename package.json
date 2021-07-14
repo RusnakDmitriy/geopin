@@ -15,7 +15,8 @@
     "dotenv": "^10.0.0",
     "google-auth-library": "^7.3.0",
     "graphql": "^15.5.1",
-    "mongoose": "^5.13.2"
+    "mongoose": "^5.13.2",
+    "react-router-dom": "^5.2.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.12"

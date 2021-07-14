@@ -1,12 +1,28 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import "mapbox-gl/dist/mapbox-gl.css";
+
+import App from "./pages/App";
+import Splash from "./pages/Splash";
+
 import reportWebVitals from './reportWebVitals';
+
+
+const Root = () => {
+  return (
+    <Router>
+      <Switch>
+        <Route exact path="/" component={App} />
+        <Route path="/login" component={Splash} />
+      </Switch>
+    </Router>
+  );
+};
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Root />
   </React.StrictMode>,
   document.getElementById('root')
 );
