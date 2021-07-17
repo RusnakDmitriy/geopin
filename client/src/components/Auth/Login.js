@@ -21,6 +21,10 @@ const Login = ({ classes }) => {
         type: 'LOGIN_USER',
         payload: me
       });
+      dispatch({
+        type: 'IS_LOGGED_IN',
+        payload: googleUser.isSignedIn(),
+      });
     } catch (err) {
       rejectGoogle(err);
     }
@@ -44,6 +48,7 @@ const Login = ({ classes }) => {
         onSuccess={responseGoogle}
         onFailure={rejectGoogle}
         isSignedIn={true}
+        buttonText='Login with Google'
         theme='dark'
       />
     </div>
