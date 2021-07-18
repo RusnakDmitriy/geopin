@@ -1,4 +1,5 @@
 import React, { useState, useContext } from "react";
+import axios from 'axios';
 import { withStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
@@ -16,9 +17,10 @@ const CreatePin = ({ classes }) => {
   const [content, setContent] = useState('');
   const { dispatch } = useContext(Context);
 
-  const handleSubmit = e => {
+  const handleSubmit = async e => {
     e.preventDefault();
-    console.log({ title, image, content })
+    const url = await handleImageUpload();
+    console.log({ title, image, url, content })
   };
 
   const handleDeleteDraft = () => {
@@ -26,6 +28,18 @@ const CreatePin = ({ classes }) => {
     setImage(null);
     setContent('');
     dispatch({ type: 'DELETE_DRAFT' });
+  };
+
+  const handleImageUpload = async () => {
+    const data = new FormData();
+    data.append('file', image);
+    data.append('upload_preset', 'geoPin');
+    data.append('cloud_name', process.env.REACT_APP_CLOUDINARY_NAME);
+    const res = await axios.post(
+      `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_NAME}/image/upload`,
+      data
+    );
+    return res.data.url;
   };
 
   return (
