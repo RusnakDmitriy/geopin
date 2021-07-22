@@ -13,15 +13,14 @@ import Context from '../../context';
 const CreateComment = ({ classes }) => {
   const client = useClient();
   const [comment, setComment] = useState('');
-  const { state, dispatch } = useContext(Context);
+  const { state } = useContext(Context);
 
   const handleSubmitComment = async () => {
     const variables = {
       text: comment,
       pinId: state.currentPin._id
     };
-    const { createComment } = await client.request(CREATE_COMMENT_MUTATION, variables);
-    dispatch({ type: 'CREATE_COMMENT', payload: createComment });
+    await client.request(CREATE_COMMENT_MUTATION, variables);
     setComment('');
   };
 
