@@ -5,6 +5,7 @@ import { withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import DeleteIcon from "@material-ui/icons/DeleteTwoTone";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { Subscription } from 'react-apollo';
 
 import { useClient } from '../client';
@@ -22,11 +23,12 @@ import {
 const INITIAL_VIEWPORT = {
   latitude: 37.7577,
   longitude: -122.4376,
-  zoom: 13
+  zoom: 13,
 };
 
 const Map = ({ classes }) => {
   const client = useClient();
+  const mobileSize = useMediaQuery('(max-width: 650px)');
   const [viewport, setViewport] = useState(INITIAL_VIEWPORT);
   const [userPosition, setUserPosition] = useState(null);
   const [popup, setPopup] = useState(null);
@@ -36,6 +38,13 @@ const Map = ({ classes }) => {
     getUserPosition();
     getPins();
   }, []);
+
+  useEffect(() => {
+    const pinExists = popup && state.pins.findIndex(pin => pin._id === popup._id) > -1;
+    if(!pinExists) {
+      setPopup(null);
+    }
+  }, [state.pins.length]);
 
   const getPins = async () => {
     const { getPins } = await client.request(GET_PINS_QUERY);
@@ -84,20 +93,26 @@ const Map = ({ classes }) => {
     setPopup(null);
   };
 
+  const handleChangeViewport = (v) => {
+    const { width, height, ...rest } = v;
+    setViewport({ ...rest });
+  }
+
   return (
-    <div className={classes.root}>
+    <div className={mobileSize ? classes.rootMobile : classes.root}>
       <ReactMapGL
         mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_TOKEN}
-        width='100vw'
+        width='100%'
         height='calc(100vh - 64px)'
         mapStyle='mapbox://styles/mapbox/streets-v9'
-        onViewportChange={(v) => setViewport(v)}
+        onViewportChange={handleChangeViewport}
+        scrollZoom={!mobileSize}
         onClick={handleMapClick}
         { ...viewport }
       >
         <div className={classes.navigationControl}>
           <NavigationControl
-            onViewportChange={(v) => setViewport(v)}
+            onViewportChange={handleChangeViewport}
           />
         </div>
         {userPosition && (
